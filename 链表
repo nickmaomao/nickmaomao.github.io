@@ -1,0 +1,225 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<malloc.h> 
+#include <string.h>
+#define OK 1
+#define ERROR 0
+#define MAXSIZE 100 
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+typedef int Status;
+
+
+//定义学生类型 
+typedef struct{
+	char name[20];//name
+	char num[20];//student ID
+	float grade;//grade
+}student;
+
+
+typedef student Elemtype;
+//定义链表类型 
+typedef struct LNode{
+	Elemtype data;
+	struct LNode *next;	
+}LNode,*Linklist;
+//初始化链表 
+Status Initlist(Linklist L){
+	L=(struct LNode*)malloc(sizeof(struct LNode));
+	L->next=NULL;
+	return OK;
+}
+//取值 
+Status GetElem(Linklist L,int i,Elemtype *e){
+	int j;
+	Linklist p;
+	j=1;
+	p=L->next;
+	
+	while(p&&j<i){
+		p=p->next;
+		++j;
+	}
+	if(!p||j>i) return ERROR;
+    *e=p->data;
+	return OK;
+}
+// 按照名字查询 
+ Status LocateElem(Linklist L,char str[],Elemtype *e){
+	
+	Linklist p;
+	p=L->next;
+	while(p&&!strcmp(p->data.name,str)){
+	
+		*e=p->data;
+		
+		return OK;
+	}
+	
+	return 0;
+}
+
+//插入 
+Status LinkInsert(Linklist L,int i,Elemtype e){
+	 Linklist p,s;
+	 int j;
+	 p=L;j=0;
+	while(p&&(j<i-1)){
+		p=p->next;++j;
+	}
+	if(!p||j>i) return ERROR;
+	s=(Linklist)malloc(sizeof(LNode));
+	s->data=e;
+	s->next=p->next;
+	p->next=s;
+	return OK;
+}
+
+//删除 
+
+Status LinkDelete(Linklist p,int i){
+	Linklist q;
+	int j=0;
+	while((p->next)&&(j<i-1)){
+		p=p->next;
+		++j;
+	}
+	if (!(p->next)||(j<i-1)) return ERROR;
+	q=p->next;
+	p->next=q->next;
+	free (q);
+	return OK;	
+}
+//学生数量 
+/*Status Getlen(Linklist L){
+	Linklist p;
+	int i;
+	p=L->next;
+	while(p){i++;p=p->next;
+	}
+	return i;
+}*/
+
+void Input(Elemtype *e){  
+    printf("姓名:");  
+	scanf("%s",e->name);  
+    printf("学号:");  
+	scanf("%s",e->num);  
+    printf("成绩:");  
+	scanf("%f",&e->grade);  
+    printf("输入完成\n\n");  
+}  
+
+void Output(Elemtype *e){
+ printf("姓名:%-20s\n学号:%-10s\n成绩:%-10.2f\n\n",e->name,e->num,e->grade);
+}
+int main(int argc, char *argv[]) {
+	LNode L;
+	Linklist p;
+	Elemtype a,b,c,d,f;
+	int x,choose;
+	char s[20];
+
+	while(1){
+		
+		int i;
+		puts("请选择：");
+		printf("\n********************************\n\n");
+		puts("1. 构造顺序表"); 
+		puts("2. 请输入要录入学生信息的人数 ");
+		puts("3. 显示学生信息");	
+		puts("4. 姓名查找");
+		puts("5. 指定位置学生信息");
+		puts("6. 指定位置插入学生信息");
+		puts("7. 删除指定位置学生信息");
+		puts("8.学生个数") ;
+		printf("\n********************************\n\n");
+		scanf("%d",&choose);
+		if(choose==0) break;
+		switch(choose){
+			case 1:
+				if(Initlist(&L))
+					printf("构建成功\n\n");
+				else
+					printf("构建失败\n\n");	
+				break;
+			case 2:
+			 printf("请输入要录入学生信息的人数:");  
+                    scanf("%d",&x);  
+                    int i;
+                    for(i=1;i<=x;i++)  
+                    {  
+                        printf("第%d个学生:\n",i);  
+                        Input(&a);  
+                        LinkInsert(&L,i,a);  
+                    }  
+                    break; 
+			
+			case 3:
+				for(i=1;i<=x;i++)
+					{
+                        GetElem(&L,i,&b);  
+                        Output(&b); 
+					}
+					break;
+			case 4:
+			 printf("请输入要查找的学生姓名:");  
+                    scanf("%s",s);  
+                    if(LocateElem(&L,s,&p))  
+                        Output(&p);  
+                    else  
+                        puts("对不起，查无此人");  
+                    break;  
+			case 5:
+                    printf("请输入要查询的位置:");  
+                    int id1;  
+                    scanf("%d",&id1);  
+                    GetElem(&L,id1,&c);
+					Output(&c); 
+                    break; 
+					
+			case 6:
+				printf ("请输入要插入的位置:");  
+                    int id2;  
+                    scanf("%d",&id2);  
+                    printf("请输入学生信息:\n");  
+                    Input(&d);  
+                    if(LinkInsert(&L,id2,d))  
+                    {  
+                        x++;  
+                        puts("插入成功"); 
+                    }  
+                    else  
+                    {  
+                        puts("插入失败");     
+                    }  
+                    break;  
+			case 7:
+			printf("请输入要删除的位置:");  
+                    int id3;  
+                    scanf("%d",&id3);  
+                    if(LinkDelete(&L,id3))  
+                    {  
+                        x--;  
+                        puts("删除成功");  
+                    }  
+                    else  
+                    {  
+                        puts("删除失败");      
+                    }  
+                    break;  
+				
+				break;
+			case 8:
+				printf("已录入的学生个数为:%d\n\n",x);
+				break;
+				
+			
+			}
+		 
+	}
+	printf("\n\n感谢你的使用，按任意键退出\n\n\n");
+
+	return 0;	
+	
+}
