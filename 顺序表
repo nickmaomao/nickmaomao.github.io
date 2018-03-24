@@ -1,0 +1,200 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+#include <string.h>
+#define ERROR 0
+#define OK 1
+#define OVERFLOW -2
+#define MAXSIZE 100
+
+typedef int Status;//定义函数返回值类型
+ 
+typedef struct
+{
+	char name[10];
+	char num[10];
+	double grade;
+ } student;
+ typedef student ElemType;
+ 
+ typedef struct
+ {
+ 	ElemType *elem;
+ 	int length;
+ }SqList;
+ 
+ Status InitList(SqList *L)
+{//初始化
+L->elem=(ElemType*)malloc(sizeof(ElemType)*MAXSIZE);
+if(!L->elem) exit(OVERFLOW);
+L->length=0;
+return OK;		
+}
+ 
+ ElemType GetElem(SqList L,int i){
+ 	return L.elem[i];
+ }
+ 
+ int Search(SqList L,char str[] ){
+ 	int i;
+ 	for(i=1;i<=L.length;i++)
+ 	{
+ 		if (strcmp(L.elem[i].name,str)==0)//STRCMP()比较两个字符是否一样的函数
+		return i;  
+	 }
+	 return 0;
+	  }
+ 
+ Status ListInsert(SqList *L,int i,ElemType e){
+ 	int j;
+ 	if((i<1)||(i>L->length+1)) return ERROR;
+ 	if (L->length==MAXSIZE) return ERROR;
+ 	for(j=L->length;j>i-1;j--)
+ 	{
+ 		L->elem[j+1]=L->elem[j];
+	 }
+	 L->elem[i]=e;
+	 ++L->length;
+	 return OK;
+ }
+ 
+ Status ListDelete(SqList *L,int i){
+ 	int j;
+ 	if((i<1)||(i>L->length)) return ERROR;
+ 	for(j=i;j<=L->length;j++){
+ 		L->elem[j]=L->elem[j-1];
+	 }
+	 --L->length;
+	 return OK;
+ }
+ 
+ void Input(ElemType *e)
+{
+	printf("姓名：");scanf("%s",e->name);
+	printf("学号：");scanf("%s",e->num);
+	printf("成绩：");scanf("%lf",&e->grade);
+		printf("完成输入\n\n");	 
+ } 
+ 
+ 
+ void Output(ElemType *e){
+ 	printf(" 姓名：%-20s\n 学号：%-10s\n 成绩：%-10.2lf\n\n",e->name,e->num,e->grade);
+ 	
+ }
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+int main() {
+	SqList L;
+	ElemType a,b,c,d;
+	/*puts("1. 构造顺序表");
+	puts("2. 录入学生信息");
+	puts("3. 显示学生信息");
+	puts("4. 输入姓名，查找该学生");
+	puts("5. 显示某位置该学生信息");
+	puts("6. 在指定位置插入学生信息");
+	puts("7. 在指定位置删除学生信息");
+	puts("8. 统计学生个数");
+	puts("0. 退出\n");*/
+	int x,t;
+	while(1){
+		int i;
+		char s[20];
+		puts("请选择");
+		puts("1. 构造顺序表");
+    	puts("2. 录入学生信息");
+	   	puts("3. 显示学生信息");
+		puts("4. 输入姓名，查找该学生");
+		puts("5. 显示某位置该学生信息");
+		puts("6. 在指定位置插入学生信息");
+		puts("7. 在指定位置删除学生信息");
+		puts("8. 统计学生个数");
+		puts("0. 退出\n");
+		scanf("%d",&t);
+		if(t==0) break;
+		switch(t){
+			case 1:
+				if(InitList (&L))
+				printf("建立成功\n\n");
+				else
+				printf("建立失败\n\n");
+				break;
+			case 2:
+					printf("请输入录入学生数（小于100）：");
+					scanf("%d",&x);
+					for(i=1;i<=x;i++){
+						printf("第%d个学生：\n",i);
+						Input(&L.elem[i]);
+					} 
+					L.length=x;
+					puts(" ");
+					break;
+			case 3:
+						for(i=1;i<=x;i++){
+							a=GetElem(L,i);
+							Output(&a);
+						}
+					break;
+			case 4:
+						printf("请输入学生姓名：\n");
+						scanf("%s",s);
+						if(Search(L,s))//利用search中的strcmp()函数来找到相同字符的元素，并返回i
+						Output(&L.elem[Search(L,s)]);
+						else
+						puts ("查无此人\n");
+						
+						break;
+			case 5:
+							printf("请输入查询位置：\n");
+							int id1;
+							scanf("%d",&id1);
+							b=GetElem(L,id1);
+							Output(&b);
+							break;
+			case 6:
+							printf("输入插入位置：\n");
+							int p;
+							scanf ("%d",&p);
+							printf("输入要插入的学生的信息：");
+							Input(&c);
+							if(ListInsert(&L,p,c)){
+								x++;//总人数加1
+								printf("插入成功。") ; 
+								 
+							}
+					else
+					{
+						printf("插入失败：") ;
+					} 
+					 break;
+		 case 7:
+		 	printf("请输入要删除的位置：\n");
+		 	int q;
+		 	scanf("%d",&q);
+		 	if(ListDelete(&L,q))
+		 	{
+		 		x--;
+		 		printf("删除成功。");	  
+			 }
+				else{
+					printf("删除失败。"); 
+				}		
+				break;
+		case 8:
+				printf("记录学生总数为：%d\n\n",L.length);
+				break;
+				
+		 
+	}
+	 
+}
+printf("\n\n完毕，安全退出\n\n\n");
+system("pause");
+return 0;
+}
